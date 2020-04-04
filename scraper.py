@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup as BS
 import urllib.request
-import json, time
+import json, time, concurrent.futures
 
 
 def get_popular_tv_links(list_url):
@@ -15,6 +15,7 @@ def get_popular_tv_links(list_url):
 
 
 def get_show_data(title_url):
+    # prepare soup
     sauce = urllib.request.urlopen('https://www.imdb.com' + title_url).read()
     soup = BS(sauce, 'lxml')
 
@@ -23,16 +24,11 @@ def get_show_data(title_url):
     poster = soup.find('div', {'class': 'poster'}).find('img')['src']
     rating = float(soup.find('span', {'itemprop': 'ratingValue'}).string)
     votes = int(soup.find('span', {'itemprop': 'ratingCount'}).string.replace(',', ''))
-    season_count = soup.find('div', {'class': 'seasons-and-year-nav'}).find_all('div')[2].find('a').string
+    season_count = int(soup.find('div', {'class': 'seasons-and-year-nav'}).find_all('div')[2].find('a').string)
 
-    seasons = []
-    previous_season = 'dummy data'
-    for i in range(1, int(season_count)+1):
-        current_season = get_season_data(title_url, i)
-        if current_season == previous_season or not current_season:
-            break
-        seasons.append(current_season)
-        previous_season = current_season
+    # get seasons data concurrently
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        seasons = executor.map(lambda p: get_season_data(*p), ((title_url, i) for i in range(1, season_count+1)))
 
     show_data = {
         'title': title,
@@ -40,8 +36,7 @@ def get_show_data(title_url):
         'poster_url': poster,
         'rating': rating,
         'vote_count': votes,
-        'seasons': seasons,
-        'season': season_count
+        'seasons': list(seasons)
     }
 
     return show_data
@@ -66,11 +61,11 @@ def get_season_data(title_url, season_nr):
             }
             season_data.append(episode_data)
     except AttributeError:
-        season_data = {}
+        season_data = []
     return season_data
 
 t = time.time()
-print(get_show_data('/title/tt0944947/')['season'])
+print(get_show_data('/title/tt0944947/')['seasons'])
 print(time.time()-t)
 #
 #
