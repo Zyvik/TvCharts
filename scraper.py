@@ -3,7 +3,7 @@ import urllib.request
 import json, time, concurrent.futures
 
 
-def get_popular_tv_links(list_url):
+def get_title_urls_from_imdb(list_url):
     sauce = urllib.request.urlopen(list_url).read()
     soup = BS(sauce, 'lxml')
 
@@ -64,10 +64,29 @@ def get_season_data(title_url, season_nr):
         season_data = []
     return season_data
 
-t = time.time()
-print(get_show_data('/title/tt0944947/')['seasons'])
-print(time.time()-t)
-#
+
+def read_json_file(filename):
+    return json.load(open(filename))
+
+
+def save_urls_to_file(url_list):
+    with open('titles.txt', 'w') as file:
+        for url in url_list:
+            file.write(f'{url}\n')
+
+
+def load_urls_from_file(filename):
+    with open(filename) as file:
+        urls = file.readlines()
+        urls = map(lambda p: p.replace('\n', ''), urls)
+    return list(urls)
+
+
+urls = load_urls_from_file('titles.txt')
+# t = time.time(
+# print(get_show_data('/title/tt0944947/')['seasons'])
+# print(time.time()-t)
+# #
 #
 # print('Getting most popular shows...')
 # popular = get_popular_tv_links('https://www.imdb.com/chart/tvmeter?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=4da9d9a5-d299-43f2-9c53-f0efa18182cd&pf_rd_r=7CWQMKRHYER61A9TT6CT&pf_rd_s=right-4&pf_rd_t=15506&pf_rd_i=toptv&ref_=chttvtp_ql_5')
