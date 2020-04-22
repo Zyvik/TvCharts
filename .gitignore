@@ -1,3 +1,5 @@
 .idea/
-data.txt
 *.txt
+*.pyc
+media/
+db.sqlite3
