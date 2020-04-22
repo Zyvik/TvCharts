@@ -1,26 +1,39 @@
 from bs4 import BeautifulSoup as BS
 import urllib.request
-import json, time, concurrent.futures
+import json
+import concurrent.futures
+import time
 
 
-def get_title_urls_from_imdb(list_url):
-    sauce = urllib.request.urlopen(list_url).read()
-    soup = BS(sauce, 'lxml')
+def get_urls_from_search_list(min_vote_count=10000):
+    urls = []
+    starting_position = 1
+    while True:
+        sauce = urllib.request.urlopen('https://www.imdb.com/search/title/'
+                                       f'?title_type=tv_series&num_votes={min_vote_count},'
+                                       f'&sort=num_votes,desc&start={starting_position}&ref_=adv_nxt')
+        soup = BS(sauce, 'lxml')
 
-    titles = soup.find_all('td', {'class': 'titleColumn'})
-    links = []
-    for title in titles:
-        links.append(title.find('a')['href'])
-    return links
+        headers = soup.find_all('h3', {'class': 'lister-item-header'})
+        # finds shows' urls and disposes of trailing trash
+        current_urls = list(map(lambda p: p.find('a')['href'][:17], headers))
+        urls += current_urls
+        if len(current_urls) < 50:
+            break
+        starting_position += 50
+
+    return urls
 
 
 def get_show_data(title_url):
-    # prepare soup
+    print(f'Scraping: {title_url}')
+    # prepares soup
     sauce = urllib.request.urlopen('https://www.imdb.com' + title_url).read()
     soup = BS(sauce, 'lxml')
 
     # gets info from show's main imdb page
     title = soup.find('h1').string
+    original_title = soup.find('div', {'class': 'originalTitle'})  # this can return None
     poster = soup.find('div', {'class': 'poster'}).find('img')['src']
     rating = float(soup.find('span', {'itemprop': 'ratingValue'}).string)
     votes = int(soup.find('span', {'itemprop': 'ratingCount'}).string.replace(',', ''))
@@ -32,6 +45,7 @@ def get_show_data(title_url):
 
     show_data = {
         'title': title,
+        'original_title': original_title.text.replace(' (original title)', '') if original_title else None,
         'imdb_url': title_url,
         'poster_url': poster,
         'rating': rating,
@@ -55,22 +69,20 @@ def get_season_data(title_url, season_nr):
         for ep, thumb, i in zip(episodes, thumbnails, range(len(episodes))):
             episode_data = {
                 'title': ep.find('a', {'itemprop': 'name'}).string,
-                'rating': ep.find('span', {'class': 'ipl-rating-star__rating'}).string,
-                'votes': ep.find('span', {'class': 'ipl-rating-star__total-votes'}).string,
-                'thumbnail': thumb['src']
+                'rating': float(ep.find('span', {'class': 'ipl-rating-star__rating'}).string),
+                'vote_count': int(ep.find('span', {'class': 'ipl-rating-star__total-votes'}).string[1:-1].replace(',', '')),
+                'thumbnail': thumb['src'],
+                'air_date': ep.find('div', {'class': 'airdate'}).string.replace('\n', '')
             }
+
             season_data.append(episode_data)
     except AttributeError:
         season_data = []
     return season_data
 
 
-def read_json_file(filename):
-    return json.load(open(filename))
-
-
-def save_urls_to_file(url_list):
-    with open('titles.txt', 'w') as file:
+def save_urls_to_file(url_list, filename):
+    with open(filename, 'w') as file:
         for url in url_list:
             file.write(f'{url}\n')
 
@@ -82,23 +94,16 @@ def load_urls_from_file(filename):
     return list(urls)
 
 
-urls = load_urls_from_file('titles.txt')
-# t = time.time(
-# print(get_show_data('/title/tt0944947/')['seasons'])
-# print(time.time()-t)
-# #
-#
-# print('Getting most popular shows...')
-# popular = get_popular_tv_links('https://www.imdb.com/chart/tvmeter?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=4da9d9a5-d299-43f2-9c53-f0efa18182cd&pf_rd_r=7CWQMKRHYER61A9TT6CT&pf_rd_s=right-4&pf_rd_t=15506&pf_rd_i=toptv&ref_=chttvtp_ql_5')
-#
-# rated = get_popular_tv_links('https://www.imdb.com/chart/toptv/?sort=nv,desc&mode=simple&page=1')
-#
-# links = set(popular).union(set(rated))
-# links = list(links)
-# print(links)
-# db = []
-# for index, link in enumerate(links, 1):
-#     print(f'Scraping show nr: {index}/{len(links)}')
-#     show_data = get_show_data(link)
-#     db.append(show_data)
-#     json.dump(db, open('data.txt', 'w'))
+def main():
+    t = time.time()
+    urls = load_urls_from_file('titles.txt')
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        show_data = executor.map(get_show_data, urls)
+    results_json = json.dumps(list(show_data))
+    with open('results_json.json', 'w') as file:
+        file.write(results_json)
+    print(time.time()-t)
+
+
+if __name__ == "__main__":
+    main()
