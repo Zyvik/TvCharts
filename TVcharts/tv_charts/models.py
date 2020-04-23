@@ -25,7 +25,7 @@ class Episodes(models.Model):
     thumbnail = models.CharField(max_length=100)
     rating = models.DecimalField(decimal_places=1, max_digits=3)
     votes = models.IntegerField()
-    air_date = models.DateField()
+    air_date = models.DateField(null=True)
 
     class Meta:
         ordering = ['series', 'season', 'episode_nr']
