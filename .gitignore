@@ -1,5 +1,6 @@
 .idea/
+media/
 *.txt
 *.pyc
-media/
+*.json
 db.sqlite3

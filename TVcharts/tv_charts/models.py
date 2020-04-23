@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 class TvSeries(models.Model):
     title = models.CharField(max_length=50)
-    original_title = models.CharField(max_length=50, default=None)
+    original_title = models.CharField(max_length=50, default=None, null=True)
     imdb_url = models.CharField(max_length=100)
     poster_url = models.CharField(max_length=100)
     rating = models.DecimalField(decimal_places=1, max_digits=3)
@@ -25,7 +25,7 @@ class Episodes(models.Model):
     thumbnail = models.CharField(max_length=100)
     rating = models.DecimalField(decimal_places=1, max_digits=3)
     votes = models.IntegerField()
-    air_date = models.CharField(max_length=50)  # change it to DateField after creating conversion code
+    air_date = models.DateField()
 
     class Meta:
         ordering = ['series', 'season', 'episode_nr']
