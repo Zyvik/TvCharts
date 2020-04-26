@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, filters
 
-from .models import TvSeries
-from . serializers import TvSeriesSerializer
+from .models import TvSeries, Episodes
+from . serializers import TvSeriesSerializer, EpisodesSerializer
 
 
 class TvSeriesList(generics.ListAPIView):
@@ -30,3 +30,17 @@ class TvSeriesDetail(APIView):
         serializer = TvSeriesSerializer(series)
         return Response(serializer.data)
 
+
+class EpisodesList(APIView):
+    """
+    List all episodes from TvSeries instance
+    """
+    def get(self, request, pk, format=None):
+        try:
+            series = TvSeries.objects.get(pk=pk)
+        except TvSeries.DoesNotExists:
+            raise Http404
+
+        episodes = Episodes.objects.filter(series=series)
+        serializer = EpisodesSerializer(episodes, many=True)
+        return Response(serializer.data)
