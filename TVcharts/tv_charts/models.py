@@ -11,7 +11,7 @@ class TvSeries(models.Model):
     votes = models.IntegerField()
 
     class Meta:
-        ordering = ['title']
+        ordering = ['-votes']
 
     def __str__(self):
         return self.title
