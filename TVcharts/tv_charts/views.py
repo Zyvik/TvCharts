@@ -1,11 +1,17 @@
 from django.shortcuts import render
 from django.http import Http404
+from django.views import generic
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, filters
 
 from .models import TvSeries, Episodes
 from . serializers import TvSeriesSerializer, EpisodesSerializer
+
+
+class HomeView(generic.list.ListView):
+    model = TvSeries
+    paginate_by = 10
 
 
 class TvSeriesList(generics.ListAPIView):
@@ -27,6 +33,7 @@ class TvSeriesDetail(APIView):
             series = TvSeries.objects.get(pk=pk)
         except TvSeries.DoesNotExists:
             raise Http404
+
         serializer = TvSeriesSerializer(series)
         return Response(serializer.data)
 
