@@ -42,5 +42,5 @@ function display_results(results) {
 }
 
 function create_result_url(result){
-    return window.location.href+result.pk;
+    return window.location.href.split('?')[0] + result.pk;
 }
