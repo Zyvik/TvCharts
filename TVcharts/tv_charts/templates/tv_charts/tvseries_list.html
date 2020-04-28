@@ -1,36 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'tv_charts/base.html' %}
+{% block body %}
     {% load static %}
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<input type="text" id="searchbar">
-<h1 id="test">Test</h1>
-<ul>
-    {% for series in object_list %}
-    <li>{{series.title}} {% if series.original_title %} ({{ series.original_title }}) {% endif %}</li>
-    {% endfor %}
-</ul>
+    <link rel="stylesheet" href="{% static 'tv_charts/search.css' %}">
+    <div class="container">
+    <div class="search-container">
+        <input type="text" id="searchbar" class="form-control" style="background: transparent; font-size: 30px">
+        <div class="search-results">
+            <ul class="list-group" id="results_list">
+            </ul>
+            <p></p>
+            <p></p>
+        </div>
+    </div>
+        <ul>
+            {% for series in object_list %}
+            <li>{{series.title}} {% if series.original_title %} ({{ series.original_title }}) {% endif %}</li>
+            {% endfor %}
+        </ul>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
 
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
-<script src="{% static 'tv_charts/search.js' %}"></script>
-</body>
-</html>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        <script src="{% static 'tv_charts/search.js' %}"></script>
+    </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+.search-container{
+    border-radius: 6px;
+    background: white;
+    overflow: hidden;
+    font-size: 20px;
+}
+.search-results{
+    max-height: 400px;
+    overflow-y: auto;
+}
