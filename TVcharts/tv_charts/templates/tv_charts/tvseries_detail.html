@@ -1,0 +1,13 @@
+{% extends 'tv_charts/base.html' %}
+{% block body %}
+    {% load static %}
+    <!-- chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <div class="container">
+        <h2>{{ object.title }}</h2>
+            <p id="notice"></p>
+        <canvas id="chart" width="400" height="100"></canvas>
+        <div id="pk" style="display: none;">{{ object.pk }}</div>
+        </div>
+    <script src="{% static 'tv_charts/tv_series_chart.js' %}"></script>
+{% endblock %}

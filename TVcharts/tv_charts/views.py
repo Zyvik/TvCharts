@@ -14,6 +14,10 @@ class HomeView(generic.list.ListView):
     paginate_by = 10
 
 
+class DetailView(generic.detail.DetailView):
+    model = TvSeries
+
+
 class TvSeriesList(generics.ListAPIView):
     """
     List all TV series
