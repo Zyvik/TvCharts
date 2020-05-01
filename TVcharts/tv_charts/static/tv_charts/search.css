@@ -1,4 +1,5 @@
 .search-container{
+    margin: 10px;
     border-radius: 6px;
     background: white;
     overflow: hidden;
@@ -7,4 +8,17 @@
 .search-results{
     max-height: 400px;
     overflow-y: auto;
+}
+
+.form-control{
+    font-size: 35px;
+}
+
+.result:hover{
+    background: darkgray;
+}
+
+li {
+    color: black;
+    font-size: 25px;
 }

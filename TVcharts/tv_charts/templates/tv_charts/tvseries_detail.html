@@ -1,12 +1,44 @@
 {% extends 'tv_charts/base.html' %}
-{% block body %}
-    {% load static %}
+{% block head %}
     <!-- chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <title>TvCharts - {{ object.title }}</title>
+{% endblock %}
+{% block body %}
+    {% load static %}
         <div class="container">
-        <h2>{{ object.title }}</h2>
-            <p id="notice"></p>
-        <canvas id="chart" width="400" height="100"></canvas>
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ object.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row row-no-gutters">
+                        <div class="col-4">
+                            <img class="img-fluid" src="{{ object.poster_url }}" alt="Damn... Poster is missing">
+                        </div>
+
+                        <div class="col-6 text-center">
+                            <a class="btn btn-dark btn-lg mb-3 mt-3" href="https://imdb.com{{ object.imdb_url }}" style="font-size: 25px" target="_blank">
+                                IMDB
+                                <img src="{% static 'tv_charts/out.png' %}" height="25" alt="" style="position: relative; top: -5px;">
+                            </a>
+                            <h3 class="mb-3">Rating: <strong>{{ object.rating }}/10</strong></h3>
+                            <h3>Votes: {{ object.votes }}</h3>
+                        </div>
+
+                        <div class="col-sm-2"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card text-center">
+                <div class="card-body">
+                    <canvas id="chart" width="400" height="100" style="margin-bottom: 25px;"></canvas>
+                    <p id="notice"></p>
+                </div>
+            </div>
+
         <div id="pk" style="display: none;">{{ object.pk }}</div>
         </div>
     <script src="{% static 'tv_charts/tv_series_chart.js' %}"></script>

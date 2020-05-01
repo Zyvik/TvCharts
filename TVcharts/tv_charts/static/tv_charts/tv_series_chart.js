@@ -3,8 +3,8 @@ const chart = document.getElementById('chart').getContext('2d');
 const pk = document.getElementById('pk');
 const notice = document.getElementById('notice');
 const season_colors = [
-    'rgba(0, 0, 0 , 0.4)',
-    'rgba(123, 123, 123, 0.4)'
+    'rgba(0, 0, 0 , 0.8)',
+    'rgba(255, 255, 255, 0.8)'
 ];
 
 async function fetch_episodes(pk) {
@@ -73,7 +73,9 @@ let myChart = new Chart(chart, {
             yAxes: [{
                 ticks: {
                     beginAtZero: false,
-                    min: 0
+                    min: 0,
+                    max: 10,
+                    fontColor: "black"
                 }
             }],
             xAxes: [{
