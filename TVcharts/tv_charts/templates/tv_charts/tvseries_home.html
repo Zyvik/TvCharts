@@ -1,0 +1,33 @@
+{% extends 'tv_charts/base.html' %}
+{% load static %}
+{% block head %}
+        <link rel="stylesheet" href="{% static 'tv_charts/search.css' %}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+    <p style="margin-bottom: 150px; border-color: black; color: black ">
+    </p>
+    <!-- search box -->
+    <div class="search-container">
+        <input type="text" id="searchbar" class="form-control" placeholder="Search for title">
+        <div class="search-results" id="results_container">
+            <ul class="list-group" id="results_list">
+            </ul>
+        </div>
+    </div>
+
+    <!--
+        <ul class="list-group">
+            {% for series in object_list %}
+            <li class="list-group-item">
+            <a href="{% url 'tv_charts:detail' series.pk %}">
+                 <img src="{{ series.poster_url }}" height="100"> {{series.title}} {% if series.original_title %} ({{ series.original_title }}) {% endif %}
+            </a>
+            </li>
+            {% endfor %}
+        </ul>
+        -->
+        <script src="{% static 'tv_charts/search.js' %}"></script>
+    </div>
+{% endblock %}

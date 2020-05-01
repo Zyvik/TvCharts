@@ -1,33 +1,52 @@
 {% extends 'tv_charts/base.html' %}
 {% load static %}
 {% block head %}
-        <link rel="stylesheet" href="{% static 'tv_charts/search.css' %}">
+    <link rel="stylesheet" href="{% static 'tv_charts/search.css' %}">
+    <title>TvCharts - list</title>
 {% endblock %}
 
 {% block body %}
     <div class="container">
-    <p style="margin-bottom: 150px; border-color: black; color: black ">
-    </p>
-    <!-- search box -->
-    <div class="search-container">
-        <input type="text" id="searchbar" class="form-control" placeholder="Search for title">
-        <div class="search-results" id="results_container">
-            <ul class="list-group" id="results_list">
-            </ul>
-        </div>
-    </div>
+        <div class="card mb-4">
 
-    <!--
-        <ul class="list-group">
-            {% for series in object_list %}
-            <li class="list-group-item">
-            <a href="{% url 'tv_charts:detail' series.pk %}">
-                 <img src="{{ series.poster_url }}" height="100"> {{series.title}} {% if series.original_title %} ({{ series.original_title }}) {% endif %}
-            </a>
-            </li>
-            {% endfor %}
-        </ul>
-        -->
-        <script src="{% static 'tv_charts/search.js' %}"></script>
+            <!-- HEADER -->
+            <div class="card-header">
+                 <h2>Tv show list</h2>
+            </div>
+
+            <!-- TV SHOW LIST -->
+            <div class="card-body">
+                 <ul class="list-group list-group-flush">
+                    {% for series in object_list %}
+                    <li class="list-group-item">
+                    <a href="{% url 'tv_charts:detail' series.pk %}">
+                         <img src="{{ series.poster_url }}" height="150"> {{series.title}} {% if series.original_title %} ({{ series.original_title }}) {% endif %}
+                    </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="card-footer">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo; first</a>
+                            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}">next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

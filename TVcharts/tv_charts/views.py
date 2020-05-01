@@ -8,12 +8,25 @@ from .models import TvSeries, Episodes
 from . serializers import TvSeriesSerializer, EpisodesSerializer
 
 
-class HomeView(generic.list.ListView):
+class HomeView(generic.TemplateView):
+    """
+    Landing page - with search option
+    """
+    template_name = 'tv_charts/tvseries_home.html'
+
+
+class TvSeriesListDjango(generic.list.ListView):
+    """
+    Generic django list view
+    """
     model = TvSeries
     paginate_by = 10
 
 
 class DetailView(generic.detail.DetailView):
+    """
+    TvSeries detail view - with chart containing all episodes (episodes data are taken from API)
+    """
     model = TvSeries
 
 
