@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework import generics, filters
 
 from .models import TvSeries, Episodes
-from . serializers import TvSeriesSerializer, EpisodesSerializer
+from .serializers import TvSeriesSerializer, EpisodesSerializer
+from .forms import FilterForm
 
 
 class HomeView(generic.TemplateView):
@@ -17,10 +18,30 @@ class HomeView(generic.TemplateView):
 
 class TvSeriesListDjango(generic.list.ListView):
     """
-    Generic django list view
+    List view with filter option
     """
     model = TvSeries
     paginate_by = 10
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        queryset = object_list if object_list is not None else self.object_list
+        queryset = queryset.order_by('title')
+
+        form = FilterForm(self.request.GET)
+        if form.is_valid():
+            title = form.cleaned_data.get('starts_with')
+            if title:
+                queryset = queryset.filter(title__startswith=title)
+
+            sort = form.cleaned_data.get('sort_by')
+            order = form.cleaned_data.get('order', '')
+            if sort:
+                queryset = queryset.order_by(f'{order}{sort}')
+
+            per_page = form.cleaned_data.get('per_page')
+            if per_page:
+                self.paginate_by = int(per_page)
+        return super().get_context_data(object_list=queryset, form=form)
 
 
 class DetailView(generic.detail.DetailView):
