@@ -51,6 +51,13 @@ class DetailView(generic.detail.DetailView):
     model = TvSeries
 
 
+class ApiInfoView(generic.TemplateView):
+    """
+    Contains info about "API"
+    """
+    template_name = 'tv_charts/API.html'
+
+
 class TvSeriesList(generics.ListAPIView):
     """
     List all TV series

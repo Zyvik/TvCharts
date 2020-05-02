@@ -9,26 +9,27 @@
 
 {% block body %}
     <div class="container">
-        <div class="card mb-4">
+        <div class="card mt-4">
 
             <!-- HEADER -->
             <div class="card-header">
                  <h2>Tv show list</h2>
             </div>
 
-            <!-- FILTER FORM -->
+            <!-- FILTER FORM HEADER -->
             <div class="card-header" id="filter_header">
-                <div class="row row-no-gutters">
+                <div class="row">
                     <div class="col">
-                        <h3>Filter</h3>
+                        <h3><img src="{% static 'tv_charts/tool.png' %}" alt="" height="28"> Filter</h3>
                     </div>
                     <div class="col text-right">
                         <img src="{% static 'tv_charts/arrow_down.png' %}" alt="arrow down" height="30" id="arrow_down" style="display: inline">
                         <img src="{% static 'tv_charts/arrow_up.png' %}" alt="arrow up" height="30" id="arrow_up" style="display: none">
                     </div>
                 </div>
-
             </div>
+
+            <!-- FILTER FORM-->
             <div class="card-body" id="filter_container" style="display:none;">
                 <form method="get">
                     {{ form.as_p }}
@@ -37,13 +38,13 @@
                 <hr>
             </div>
 
-                <!-- TV SHOW LIST -->
+            <!-- TV SHOW LIST -->
             <div class="card-body">
                  <ul class="list-group list-group-flush">
                     {% for series in object_list %}
                     <li class="list-group-item">
                     <a href="{% url 'tv_charts:detail' series.pk %}">
-                         <img src="{{ series.poster_url }}" height="150"> {{series.title}} {% if series.original_title %} ({{ series.original_title }}) {% endif %}
+                         <img src="{{ series.poster_url }}" height="150" alt="poster"> {{series.title}} {% if series.original_title %} ({{ series.original_title }}) {% endif %}
                     </a>
                     </li>
                     {% endfor %}

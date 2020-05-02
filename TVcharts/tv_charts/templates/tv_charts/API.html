@@ -1,0 +1,61 @@
+{% extends 'tv_charts/base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>TvCharts - API</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card mt-4 mb-4">
+            <div class="card-header">
+                <h2>Very basic API</h2>
+            </div>
+            <div class="card-body">
+                <p>
+                    I've built this "API" for search and chart display options.
+                    Because of that it only accepts GET requests (since there is no reason to post things).
+                </p>
+                <hr>
+                <!-- ALL TV SHOWS -->
+                <h4>Get all TV shows:</h4>
+                <p>URL below returns list of all TV shows in my database.</p>
+                <input class="form-control" type="url" value="http://127.0.0.1:8000/api/tv_series/" id="list_input">
+                <div class="text-right mt-2">
+                    <button type="button" class="btn btn-dark" id="list_btn" >Try it</button>
+                </div>
+                <hr>
+                <!-- SEARCH -->
+                <h4>Search for title:</h4>
+                <p>URL below returns list of TV shows containing provided value.</p>
+                <input class="form-control" type="url" value="http://127.0.0.1:8000/api/tv_series/?search=" id="search_input">
+                <div class="text-right mt-2">
+                    <button type="button" class="btn btn-dark" id="search_btn" >Try it</button>
+                </div>
+                <hr>
+                <!-- SPECIFIC SHOW -->
+                <h4>Get specific TV show:</h4>
+                <p>
+                    Every show has it's own primary key (pk for short). <br>
+                    Replace "&ltpk>" in URL below to get JSON of specific show data. (You can get pk from search option above)
+                </p>
+                <input class="form-control" type="url" value="http://127.0.0.1:8000/api/tv_series/<pk>" id="specific_input">
+                <div class="text-right mt-2">
+                    <button type="button" class="btn btn-dark" id="specific_btn" >Try it</button>
+                </div>
+                <hr>
+                <!-- EPISODES -->
+                <h4>Get all episodes of specific TV show:</h4>
+                <p>
+                    As mentioned before - don't forget change "&ltpk>" in URL below. <br>
+                </p>
+                <input class="form-control" type="url" value="http://127.0.0.1:8000/api/tv_series/<pk>/episodes" id="episodes_input">
+                <div class="text-right mt-2">
+                    <button type="button" class="btn btn-dark" id="episodes_btn" >Try it</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="{% static 'tv_charts/api_info.js' %}"></script>
+
+{% endblock %}
