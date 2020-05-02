@@ -1,0 +1,10 @@
+#filter_header{
+    color: white;
+    background: #343a40;
+}
+
+#filter_header:hover{
+   /* background: #464d55; */
+    background: #2a2e33;
+    cursor: pointer;
+}
