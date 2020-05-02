@@ -16,6 +16,16 @@ class HomeView(generic.TemplateView):
     template_name = 'tv_charts/tvseries_home.html'
 
 
+class ApiInfoView(generic.TemplateView):
+    """
+    Contains info about "API"
+    """
+    template_name = 'tv_charts/API.html'
+
+
+class AboutView(generic.TemplateView):
+    template_name = 'tv_charts/about.html'
+
 class TvSeriesListDjango(generic.list.ListView):
     """
     List view with filter option
@@ -49,13 +59,6 @@ class DetailView(generic.detail.DetailView):
     TvSeries detail view - with chart containing all episodes (episodes data are taken from API)
     """
     model = TvSeries
-
-
-class ApiInfoView(generic.TemplateView):
-    """
-    Contains info about "API"
-    """
-    template_name = 'tv_charts/API.html'
 
 
 class TvSeriesList(generics.ListAPIView):
