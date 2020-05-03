@@ -1,4 +1,4 @@
-const root = 'http://127.0.0.1:8000/api/tv_series/';
+const root = 'http://' + window.location.host + '/api/tv_series/';
 const chart = document.getElementById('chart').getContext('2d');
 const pk = document.getElementById('pk');
 const notice = document.getElementById('notice');
@@ -38,7 +38,7 @@ function prepare_data(data){
 
 function find_minimum(data){
     let min = Math.min(...data);
-    console.log(data);
+
     if (min>5){
         min = 5;
     } else if (min <= 1){

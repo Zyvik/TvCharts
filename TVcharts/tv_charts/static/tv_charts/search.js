@@ -1,4 +1,4 @@
-const root = 'http://127.0.0.1:8000/api/tv_series/';
+const root = 'http://' + window.location.host + '/api/tv_series/';
 const search_bar = document.getElementById('searchbar');
 const output = document.getElementById('results_list');
 const results_container = document.getElementById('results_container');

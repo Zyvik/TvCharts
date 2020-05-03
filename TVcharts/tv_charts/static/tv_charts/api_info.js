@@ -7,6 +7,11 @@ const specific_btn = document.getElementById('specific_btn');
 const episodes_input = document.getElementById('episodes_input');
 const episodes_btn = document.getElementById('episodes_btn');
 
+const host = 'http://' + window.location.host;
+list_input.value = host + list_input.value;
+search_input.value = host + search_input.value;
+specific_input.value = host + specific_input.value;
+episodes_input.value = host + episodes_input.value;
 
 list_btn.addEventListener('click', function () {
     window.open(list_input.value, '_blank');
