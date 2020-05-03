@@ -5,7 +5,7 @@ class FilterForm(forms.Form):
     """
     Form to filter ad sort data in TvSeriesListDjango
     """
-    sort_options = [('', 'title'), ('votes', 'number of votes'), ('rating', 'rating')]
+    sort_options = [('title', 'title'), ('votes', 'number of votes'), ('rating', 'rating')]
     order_options = [('', 'ascending'), ('-', 'descending')]
 
     starts_with = forms.CharField()

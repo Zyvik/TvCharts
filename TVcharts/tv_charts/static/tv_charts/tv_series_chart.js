@@ -3,8 +3,8 @@ const chart = document.getElementById('chart').getContext('2d');
 const pk = document.getElementById('pk');
 const notice = document.getElementById('notice');
 const season_colors = [
-    'rgba(0, 0, 0 , 0.8)',
-    'rgba(255, 255, 255, 0.8)'
+    'rgba(52, 58, 64, 1)',
+    'rgba(255, 255, 255, 1)'
 ];
 
 async function fetch_episodes(pk) {
@@ -24,7 +24,7 @@ function prepare_data(data){
 
         labels.push('s'+data[i].season+'e'+data[i].episode_nr + '\n' + data[i].title + '\n' + data[i].air_date + '\nvotes: ' + data[i].votes);
         background_color.push(season_colors[data[i].season % 2]);
-        border_color.push('rgba(0, 0, 0, 0.2)');
+        border_color.push('rgba(52, 58, 64, 1)');
     }
 
     let processed_data = {
@@ -69,6 +69,9 @@ let myChart = new Chart(chart, {
         }]
     },
     options: {
+        legend: {
+            display: false
+        },
         scales: {
             yAxes: [{
                 ticks: {

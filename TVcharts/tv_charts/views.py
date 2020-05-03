@@ -26,6 +26,7 @@ class ApiInfoView(generic.TemplateView):
 class AboutView(generic.TemplateView):
     template_name = 'tv_charts/about.html'
 
+
 class TvSeriesListDjango(generic.list.ListView):
     """
     List view with filter option
