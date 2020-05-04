@@ -7,6 +7,9 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
 
+    background-size: cover;
+    background-position: center center;
+
 
     /* gradient */
     /*background: #536976; /* fallback for old browsers */
@@ -16,7 +19,7 @@ body {
 
     /*image*/
     background-image:linear-gradient(rgba(255,255,255,.5),
-    rgba(0,0,0,.5)), url('tv.png');
+    rgba(0,0,0,.5)), url('tv.jpg');
 
     color: black;
 }
