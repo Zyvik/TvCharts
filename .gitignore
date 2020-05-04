@@ -1,5 +1,4 @@
 .idea/
 media/
-scraped data/
 *.pyc
 db.sqlite3
