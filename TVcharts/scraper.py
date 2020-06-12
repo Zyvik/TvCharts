@@ -1,54 +1,59 @@
-from bs4 import BeautifulSoup as BS
-import urllib.request
-import urllib.error
+from urllib import request, error
 import json
 import concurrent.futures
-import time
+from bs4 import BeautifulSoup as BS
 
 
 def get_urls_from_search_list(min_vote_count=10000):
     urls = []
     starting_position = 1
+    # most popular tv shows (# of votes)
+    url = 'https://www.imdb.com/search/title/'\
+          f'?title_type=tv_series&num_votes={min_vote_count},'\
+          f'&sort=num_votes,desc&start={starting_position}&ref_=adv_nxt'
+
     while True:
-        sauce = urllib.request.urlopen('https://www.imdb.com/search/title/'
-                                       f'?title_type=tv_series&num_votes={min_vote_count},'
-                                       f'&sort=num_votes,desc&start={starting_position}&ref_=adv_nxt')
+        sauce = request.urlopen(url)
         soup = BS(sauce, 'lxml')
 
         headers = soup.find_all('h3', {'class': 'lister-item-header'})
         # finds shows' urls and disposes of trailing trash
         current_urls = list(map(lambda p: p.find('a')['href'][:17], headers))
         urls += current_urls
+        starting_position += 50
         if len(current_urls) < 50:
             break
-        starting_position += 50
 
     return urls
 
 
 def get_show_data(title_url):
     # prepares soup
-    sauce = urllib.request.urlopen('https://www.imdb.com' + title_url).read()
+    sauce = request.urlopen('https://www.imdb.com' + title_url).read()
     soup = BS(sauce, 'lxml')
 
     # gets info from show's main imdb page
     title = soup.find('h1').string
-    original_title = soup.find('div', {'class': 'originalTitle'})  # this can return None
+    original_title = soup.find('div', {'class': 'originalTitle'})
     poster = soup.find('div', {'class': 'poster'}).find('img')['src']
     rating = float(soup.find('span', {'itemprop': 'ratingValue'}).string)
     votes = int(soup.find('span', {'itemprop': 'ratingCount'}).string.replace(',', ''))
     try:
-        season_count = int(soup.find('div', {'class': 'seasons-and-year-nav'}).find_all('div')[2].find('a').string)
+        seasons_div = soup.find('div', {'class': 'seasons-and-year-nav'})
+        season_count = int(seasons_div.find_all('div')[2].find('a').string)
 
         # get seasons data concurrently
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-            seasons = executor.map(lambda p: get_season_data(*p), ((title_url, i) for i in range(1, season_count + 1)))
+            seasons = executor.map(
+                lambda p: get_season_data(*p),
+                ((title_url, i) for i in range(1, season_count + 1))
+            )
     except IndexError:
         seasons = ''
 
     show_data = {
         'title': title,
-        'original_title': original_title.text.replace(' (original title)', '') if original_title else None,
+        'original_title': original_title,
         'imdb_url': title_url,
         'poster_url': poster,
         'rating': rating,
@@ -60,10 +65,11 @@ def get_show_data(title_url):
 
 
 def get_season_data(title_url, season_nr):
-    """Returns season info - JSON style. If season isn't out yet, it returns empty list."""
+    """Returns season info. If season isn't out yet, it returns empty list."""
     try:
-        sauce = urllib.request.urlopen(f'https://www.imdb.com{title_url}episodes?season={season_nr}')
-    except urllib.error.HTTPError:
+        url = f'https://www.imdb.com{title_url}episodes?season={season_nr}'
+        sauce = request.urlopen(url)
+    except error.HTTPError:
         return []
     soup = BS(sauce, 'lxml')
 
@@ -73,12 +79,15 @@ def get_season_data(title_url, season_nr):
 
     try:
         for ep, thumb, i in zip(episodes, thumbnails, range(len(episodes))):
+            rating_div = ep.find('span', {'class': 'ipl-rating-star__rating'})
+            votes = ep.find('span', {'class': 'ipl-rating-star__total-votes'})
+            air_date_div = ep.find('div', {'class': 'airdate'})
             episode_data = {
                 'title': ep.find('a', {'itemprop': 'name'}).string,
-                'rating': float(ep.find('span', {'class': 'ipl-rating-star__rating'}).string),
-                'vote_count': int(ep.find('span', {'class': 'ipl-rating-star__total-votes'}).string[1:-1].replace(',', '')),
+                'rating': float(rating_div.string),
+                'vote_count': int(votes.string[1:-1].replace(',', '')),
                 'thumbnail': thumb['src'],
-                'air_date': ep.find('div', {'class': 'airdate'}).string.replace('\n', '')
+                'air_date': air_date_div.string.replace('\n', '')
             }
 
             season_data.append(episode_data)
